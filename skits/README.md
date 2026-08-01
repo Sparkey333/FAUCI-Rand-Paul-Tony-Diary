@@ -3,10 +3,17 @@
 Two short vertical skits about a document nobody checked. Written to be shot in
 one room with a phone, or assembled from AI cutaways, or mixed.
 
-| | Skit | Runtime | Cast |
-|---|---|---|---|
-| 1 | [A Source](01-a-source.md) | ~35s | 3 (2 works) |
-| 2 | [We Never Said That](02-we-never-said-that.md) | ~40s | 2 |
+| | Skit | Runtime | Cast | |
+|---|---|---|---|---|
+| 1 | [A Source](01-a-source.md) | ~35s | 3 (2 works) | Nobody asks where it came from |
+| 2 | [We Never Said That](02-we-never-said-that.md) | ~40s | 2 | The tool refuses to overclaim |
+| 3 | [The Expert](03-the-expert.md) | ~35s | 2 | Scrupulously, uselessly correct |
+| 4 | [Chain of Custody](04-chain-of-custody.md) | ~30s | 2 | It's Dave. It was always Dave. |
+| 5 | [It Verifies](05-it-verifies.md) | ~40s | 2 | **The thesis. Shoot this one.** |
+
+[**alts.md**](alts.md) has 15-second cutdowns of all five, four swappable cold
+opens, alternate punchlines, tone variants, a one-liner bank, and a running
+order. Nothing there needs a reshoot if you grabbed the listed coverage.
 
 **Every character is invented.** These are about a *situation* — a document
 circulating faster than anyone can verify it — not about any real person. No real
@@ -38,10 +45,16 @@ B-roll or bin them.
 Made with Higgsfield (Kling 3.0 Turbo), 1080p, 9:16, 5s each — no people, no
 faces, so they cut into anything and raise no likeness questions.
 
-| Used in | Content | Job |
-|---|---|---|
-| Skit 1, shot 1 | Overhead: folder slams onto a cluttered desk, papers scatter | `7fad3aa6-6536-4280-b406-f0bb8c511a7c` |
-| Skit 2, shot 11 | Close-up: terminal text scrolling on a laptop in a dark room | `d1de71a0-7fa5-443f-b0b9-14886d34e14b` |
+| File | Used in | Content | Job |
+|---|---|---|---|
+| `cutaway-folder-slam.mp4` | Skit 1, shot 1 | Overhead: folder slams onto a cluttered desk, papers scatter | `7fad3aa6` |
+| `cutaway-terminal-glow.mp4` | Skit 2, shot 11 | Close-up: terminal text scrolling on a laptop in a dark room | `d1de71a0` |
+| `cutaway-corkboard.mp4` | Skit 3, shot 1 | Corkboard, pinned pages, red string between pins | `1e7f477d` |
+| `cutaway-photocopier.mp4` | Skit 4, shot 9 | Photocopier degrading each successive page | `5d759fe1` |
+
+All four are interchangeable — any of them cuts into any skit as an establishing
+shot or a beat of air. The photocopier is the most useful spare: a copy of a
+copy of a copy is the whole subject in one image.
 
 The clips are **not committed** — they live in Higgsfield and were generated
 from a sandbox whose egress policy blocks the CDN, so they could not be pulled
