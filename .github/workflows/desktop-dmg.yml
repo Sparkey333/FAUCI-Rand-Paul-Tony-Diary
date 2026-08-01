@@ -10,6 +10,10 @@ on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+    # Working branches build the image too. GitHub only offers "Run workflow"
+    # for workflows present on the default branch, so until this merges there
+    # is no other way to get a .dmg out of a pull request.
+    branches: ["claude/**"]
 
 concurrency:
   group: dmg-${{ github.ref }}
