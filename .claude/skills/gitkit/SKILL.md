@@ -135,12 +135,28 @@ Read the screenshot. Two failures only a screenshot catches:
 
   Then a screenshot distinguishes "working" from "silently inert" at a glance.
 
-Beware `pkill -f <appname>` — `-f` matches the whole command line, so it will
-match and kill the very shell running it. Kill by PID.
+Beware `pkill -f <appname>`: `-f` matches the whole command line, so when the
+name appears in the script you are running, it matches and kills that shell.
+Prefer `pkill -x <exact-process-name>`, or kill by PID.
 
 ### 5c. Build the .dmg in CI
 
-On `workflow_dispatch` and `v*` tags, `runs-on: macos-14`:
+`runs-on: macos-14`, triggered by `workflow_dispatch` and `v*` tags.
+
+**A `workflow_dispatch` workflow is not dispatchable until it exists on the
+default branch** — GitHub returns a bare 404 from the API and shows no "Run
+workflow" button, which reads like a broken file rather than a bootstrap
+problem. So a workflow added in a pull request cannot be run from that pull
+request. To get an artifact out before merging, add the working branch to the
+push trigger:
+
+```yaml
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+    branches: ["<working-branch-glob>"]
+```
 
 ```yaml
 - uses: dtolnay/rust-toolchain@stable
