@@ -8,3 +8,4 @@ provenance.manifest.json
 
 node_modules
 .DS_Store
+skits/media/
