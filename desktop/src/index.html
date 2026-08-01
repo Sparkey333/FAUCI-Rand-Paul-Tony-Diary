@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Provenance</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Provenance</h1>
+        <p class="lede">
+          Seal a folder to fix its contents, then check it later for any change.
+        </p>
+      </header>
+
+      <section class="picker">
+        <button id="choose" class="primary">Choose folder…</button>
+        <code id="chosen" class="path" data-empty="true">No folder selected</code>
+      </section>
+
+      <section class="actions">
+        <label for="note">Chain-of-custody note <span class="hint">(stored in the manifest)</span></label>
+        <input id="note" type="text" placeholder="e.g. copy as received, 2026-07-14, from public archive" />
+        <div class="row">
+          <button id="seal" disabled>Seal folder</button>
+          <button id="verify" disabled>Verify against manifest</button>
+        </div>
+      </section>
+
+      <section id="result" hidden aria-live="polite"></section>
+
+      <footer>
+        <p>
+          <strong>What a seal proves.</strong> Matching hashes show the bytes are
+          unchanged since <em>you</em> sealed them. That is all. It does not show
+          a document is genuine, correctly attributed, or that it says what
+          someone claims it says — those are questions about sourcing, and no
+          hash can answer them.
+        </p>
+      </footer>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
