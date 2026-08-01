@@ -570,7 +570,7 @@
       "name": "Jan",
       "category": "local",
       "keyUrl": "https://jan.ai/download",
-      "docsUrl": "https://jan.ai/docs/api-server",
+      "docsUrl": "https://jan.ai/docs",
       "envVar": "JAN_BASE_URL",
       "baseUrl": "http://localhost:1337/v1",
       "requiresKey": false,
