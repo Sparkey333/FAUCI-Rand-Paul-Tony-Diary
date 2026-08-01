@@ -150,16 +150,25 @@ On `workflow_dispatch` and `v*` tags, `runs-on: macos-14`:
   working-directory: desktop
 ```
 
-Then, before uploading, prove the artifact is what it claims:
+Then prove the artifact is what it claims:
 
 ```bash
 lipo -archs "$APP/Contents/MacOS/<binary>"   # must list arm64 AND x86_64
-open -a "$APP" && sleep 12 && pgrep -f <binary>   # must still be running
+
+# `open -a` looks up an application NAME via Launch Services and will fail with
+# "Unable to find application named ..." when given a path. Drop the -a.
+open "$APP" && sleep 12 && pgrep -x <binary>   # must still be running
 ```
 
 Universal matters: an arm64-only build silently fails to launch on Intel Macs.
 Upload with `actions/upload-artifact` and `if-no-files-found: error`, so a
 missing bundle fails the run instead of producing an empty download.
+
+**Order the upload before the launch check.** Steps stop at the first failure,
+so a smoke test placed first turns a flaky launch on a headless runner into a
+run with no downloadable artifact at all — the build worked and the user still
+got nothing. Upload first, then verify: the job still goes red, but the image
+is there to inspect.
 
 ### 5d. Get it onto the user's Mac and test it
 

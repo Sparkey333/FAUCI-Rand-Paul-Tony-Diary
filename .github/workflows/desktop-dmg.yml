@@ -67,21 +67,9 @@ jobs:
           grep -q arm64 /tmp/archs
           grep -q x86_64 /tmp/archs
 
-      # Proof the shipped build actually works, not just that it linked.
-      - name: Smoke-test the bundled app
-        run: |
-          set -euo pipefail
-          APP=desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/Provenance.app
-          open -a "$APP"
-          sleep 12
-          if pgrep -f provenance-desktop > /dev/null; then
-            echo "app launched and stayed up"
-            pkill -f provenance-desktop || true
-          else
-            echo "::error::the app exited immediately after launch"
-            exit 1
-          fi
-
+      # Upload before the launch check: if the smoke test is flaky on a headless
+      # runner, the job should still fail loudly *and* leave a downloadable image
+      # rather than nothing at all.
       - name: Upload the .dmg
         uses: actions/upload-artifact@v4
         with:
@@ -89,6 +77,25 @@ jobs:
           path: ${{ steps.find.outputs.path }}
           if-no-files-found: error
           retention-days: 30
+
+      # Proof the shipped build actually works, not just that it linked.
+      - name: Smoke-test the bundled app
+        run: |
+          set -euo pipefail
+          APP=desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/Provenance.app
+          # `open -a` resolves an application *name* through Launch Services;
+          # a path has to be opened without -a.
+          open "$APP"
+          sleep 12
+          # -x matches the process name exactly, so this cannot match the shell
+          # running the check.
+          if pgrep -x provenance-desktop > /dev/null; then
+            echo "app launched and stayed up"
+            pkill -x provenance-desktop || true
+          else
+            echo "::error::the app exited immediately after launch"
+            exit 1
+          fi
 
       - name: Attach to the release
         if: startsWith(github.ref, 'refs/tags/v')
