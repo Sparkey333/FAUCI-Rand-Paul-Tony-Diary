@@ -61,6 +61,18 @@ jobs:
       - name: Check the claim ledger
         run: ./target/release/provenance ledger check --file ledger/claims.jsonl
 
+  # The provider registry behind the BYOK / Feature Parity tabs. Console URLs
+  # get reorganised constantly, so the links are re-checked on every push rather
+  # than trusted from whenever they were last written down.
+  byok-registry:
+    name: BYOK registry and links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate the registry and probe every link
+        run: python3 .claude/skills/byok/scripts/check-links.py
+
   desktop:
     name: Desktop app
     runs-on: ubuntu-latest
