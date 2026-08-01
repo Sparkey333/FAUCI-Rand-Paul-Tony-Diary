@@ -1,0 +1,7 @@
+# Claim ledger — one JSON object per line. See README.md in this directory.
+#
+# Empty by design. Add entries only with a citation attached; a claim recorded
+# without a source stays `unverified`, which is the honest state for an
+# assertion nobody has checked yet.
+#
+# Add via:  provenance ledger add --id ... --actor ... --assertion ... --source ...

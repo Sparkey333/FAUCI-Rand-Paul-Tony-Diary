@@ -1,0 +1,11 @@
+/target
+desktop/src-tauri/target
+desktop/src-tauri/gen/schemas
+
+# Written by `provenance seal`; evidence manifests belong with the evidence,
+# not committed by accident from a working directory.
+provenance.manifest.json
+
+node_modules
+.DS_Store
+skits/media/

@@ -1,0 +1,610 @@
+{
+  "$comment": "Single source of truth. The BYOK tab and the Feature Parity tab both render from this file — add a provider here and it appears in both. Every keyUrl is checked by scripts/check-links.py, which CI runs.",
+  "schemaVersion": 1,
+  "lastReviewed": "2026-08-01",
+  "capabilityKeys": {
+    "streaming": "Token-by-token streaming responses",
+    "tools": "Tool / function calling",
+    "vision": "Image input",
+    "structured": "Enforced JSON / schema-constrained output",
+    "embeddings": "Embedding endpoint on the same key",
+    "caching": "Prompt caching",
+    "reasoning": "Extended / visible reasoning modes"
+  },
+  "categories": [
+    {
+      "id": "commercial",
+      "label": "Commercial",
+      "blurb": "First-party paid APIs. Key is billed to your account."
+    },
+    {
+      "id": "cloud",
+      "label": "Cloud platform",
+      "blurb": "Models via a cloud provider. Uses platform IAM rather than a simple API key."
+    },
+    {
+      "id": "aggregator",
+      "label": "Aggregator & open-model hosts",
+      "blurb": "One key, many models — including open weights."
+    },
+    {
+      "id": "media",
+      "label": "Media generation",
+      "blurb": "Image, video, audio, and 3D generation."
+    },
+    {
+      "id": "local",
+      "label": "Local & self-hosted",
+      "blurb": "Runs on your own hardware. No key leaves the machine."
+    }
+  ],
+  "providers": [
+    {
+      "id": "anthropic",
+      "name": "Anthropic",
+      "category": "commercial",
+      "keyUrl": "https://console.anthropic.com/settings/keys",
+      "docsUrl": "https://docs.claude.com/en/api/overview",
+      "envVar": "ANTHROPIC_API_KEY",
+      "baseUrl": "https://api.anthropic.com/v1",
+      "keyPrefix": "sk-ant-",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": false,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "Embeddings are not first-party; use a separate provider for those."
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "category": "commercial",
+      "keyUrl": "https://platform.openai.com/api-keys",
+      "docsUrl": "https://platform.openai.com/docs/api-reference",
+      "envVar": "OPENAI_API_KEY",
+      "baseUrl": "https://api.openai.com/v1",
+      "keyPrefix": "sk-",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "The de facto wire format; most entries below are OpenAI-compatible."
+    },
+    {
+      "id": "google-ai-studio",
+      "name": "Google AI Studio (Gemini)",
+      "category": "commercial",
+      "keyUrl": "https://aistudio.google.com/apikey",
+      "docsUrl": "https://ai.google.dev/gemini-api/docs",
+      "envVar": "GEMINI_API_KEY",
+      "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "Has a free tier with rate limits. Vertex AI is the production path."
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral AI",
+      "category": "commercial",
+      "keyUrl": "https://console.mistral.ai/api-keys",
+      "docsUrl": "https://docs.mistral.ai/",
+      "envVar": "MISTRAL_API_KEY",
+      "baseUrl": "https://api.mistral.ai/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": false
+      }
+    },
+    {
+      "id": "cohere",
+      "name": "Cohere",
+      "category": "commercial",
+      "keyUrl": "https://dashboard.cohere.com/api-keys",
+      "docsUrl": "https://docs.cohere.com/reference/about",
+      "envVar": "COHERE_API_KEY",
+      "baseUrl": "https://api.cohere.com/v2",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": false,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": false
+      },
+      "notes": "Strong reranking and embedding models."
+    },
+    {
+      "id": "xai",
+      "name": "xAI (Grok)",
+      "category": "commercial",
+      "keyUrl": "https://console.x.ai/",
+      "docsUrl": "https://docs.x.ai/docs/overview",
+      "envVar": "XAI_API_KEY",
+      "baseUrl": "https://api.x.ai/v1",
+      "keyPrefix": "xai-",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": false,
+        "caching": true,
+        "reasoning": true
+      }
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "category": "commercial",
+      "keyUrl": "https://platform.deepseek.com/api_keys",
+      "docsUrl": "https://api-docs.deepseek.com/",
+      "envVar": "DEEPSEEK_API_KEY",
+      "baseUrl": "https://api.deepseek.com/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": false,
+        "structured": true,
+        "embeddings": false,
+        "caching": true,
+        "reasoning": true
+      }
+    },
+    {
+      "id": "azure-openai",
+      "name": "Azure OpenAI",
+      "category": "cloud",
+      "keyUrl": "https://portal.azure.com/",
+      "docsUrl": "https://learn.microsoft.com/en-us/azure/ai-services/openai/",
+      "envVar": "AZURE_OPENAI_API_KEY",
+      "baseUrl": "https://<resource>.openai.azure.com/openai/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "Per-resource endpoint and deployment names; not a drop-in for api.openai.com."
+    },
+    {
+      "id": "aws-bedrock",
+      "name": "AWS Bedrock",
+      "category": "cloud",
+      "keyUrl": "https://console.aws.amazon.com/bedrock/",
+      "docsUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+      "envVar": "AWS_ACCESS_KEY_ID",
+      "baseUrl": "https://bedrock-runtime.<region>.amazonaws.com",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "SigV4 request signing, not a bearer key. Model access must be requested per model."
+    },
+    {
+      "id": "google-vertex",
+      "name": "Google Vertex AI",
+      "category": "cloud",
+      "keyUrl": "https://console.cloud.google.com/vertex-ai",
+      "docsUrl": "https://cloud.google.com/vertex-ai/generative-ai/docs",
+      "envVar": "GOOGLE_APPLICATION_CREDENTIALS",
+      "baseUrl": "https://<region>-aiplatform.googleapis.com/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "Service-account OAuth rather than an API key."
+    },
+    {
+      "id": "openrouter",
+      "name": "OpenRouter",
+      "category": "aggregator",
+      "keyUrl": "https://openrouter.ai/keys",
+      "docsUrl": "https://openrouter.ai/docs/quickstart",
+      "envVar": "OPENROUTER_API_KEY",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "keyPrefix": "sk-or-",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": false,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "One key across most vendors. Capabilities vary by the model you route to."
+    },
+    {
+      "id": "together",
+      "name": "Together AI",
+      "category": "aggregator",
+      "keyUrl": "https://api.together.xyz/settings/api-keys",
+      "docsUrl": "https://docs.together.ai/docs/introduction",
+      "envVar": "TOGETHER_API_KEY",
+      "baseUrl": "https://api.together.xyz/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      }
+    },
+    {
+      "id": "groq",
+      "name": "Groq",
+      "category": "aggregator",
+      "keyUrl": "https://console.groq.com/keys",
+      "docsUrl": "https://console.groq.com/docs/quickstart",
+      "envVar": "GROQ_API_KEY",
+      "baseUrl": "https://api.groq.com/openai/v1",
+      "keyPrefix": "gsk_",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": false,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "Very low latency on open-weight models."
+    },
+    {
+      "id": "fireworks",
+      "name": "Fireworks AI",
+      "category": "aggregator",
+      "keyUrl": "https://app.fireworks.ai/settings/users/api-keys",
+      "docsUrl": "https://docs.fireworks.ai/getting-started/introduction",
+      "envVar": "FIREWORKS_API_KEY",
+      "baseUrl": "https://api.fireworks.ai/inference/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      }
+    },
+    {
+      "id": "deepinfra",
+      "name": "DeepInfra",
+      "category": "aggregator",
+      "keyUrl": "https://deepinfra.com/dash/api_keys",
+      "docsUrl": "https://deepinfra.com/docs",
+      "envVar": "DEEPINFRA_API_KEY",
+      "baseUrl": "https://api.deepinfra.com/v1/openai",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      }
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "category": "aggregator",
+      "keyUrl": "https://huggingface.co/settings/tokens",
+      "docsUrl": "https://huggingface.co/docs/inference-providers/index",
+      "envVar": "HF_TOKEN",
+      "baseUrl": "https://router.huggingface.co/v1",
+      "keyPrefix": "hf_",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "Routes to third-party inference providers; also the main open-weights host."
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity",
+      "category": "aggregator",
+      "keyUrl": "https://www.perplexity.ai/account/api/keys",
+      "docsUrl": "https://docs.perplexity.ai/",
+      "envVar": "PERPLEXITY_API_KEY",
+      "baseUrl": "https://api.perplexity.ai",
+      "keyPrefix": "pplx-",
+      "capabilities": {
+        "streaming": true,
+        "tools": false,
+        "vision": true,
+        "structured": true,
+        "embeddings": false,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "Answers are web-grounded with citations."
+    },
+    {
+      "id": "cerebras",
+      "name": "Cerebras",
+      "category": "aggregator",
+      "keyUrl": "https://cloud.cerebras.ai/",
+      "docsUrl": "https://inference-docs.cerebras.ai/introduction",
+      "envVar": "CEREBRAS_API_KEY",
+      "baseUrl": "https://api.cerebras.ai/v1",
+      "keyPrefix": "csk-",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": false,
+        "structured": true,
+        "embeddings": false,
+        "caching": false,
+        "reasoning": true
+      }
+    },
+    {
+      "id": "nvidia-nim",
+      "name": "NVIDIA NIM",
+      "category": "aggregator",
+      "keyUrl": "https://build.nvidia.com/",
+      "docsUrl": "https://docs.nvidia.com/nim/index.html",
+      "envVar": "NVIDIA_API_KEY",
+      "baseUrl": "https://integrate.api.nvidia.com/v1",
+      "keyPrefix": "nvapi-",
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "The same containers can be self-hosted on your own GPUs."
+    },
+    {
+      "id": "higgsfield",
+      "name": "Higgsfield",
+      "category": "media",
+      "keyUrl": "https://higgsfield.ai/",
+      "docsUrl": "https://higgsfield.ai/",
+      "envVar": "HIGGSFIELD_API_KEY",
+      "baseUrl": "https://higgsfield.ai/api",
+      "capabilities": {
+        "streaming": false,
+        "tools": false,
+        "vision": true,
+        "structured": false,
+        "embeddings": false,
+        "caching": false,
+        "reasoning": false
+      },
+      "notes": "Image, video, audio, and 3D generation. Credit-based rather than per-token. Also exposed over MCP, which is how this session reaches it."
+    },
+    {
+      "id": "replicate",
+      "name": "Replicate",
+      "category": "media",
+      "keyUrl": "https://replicate.com/account/api-tokens",
+      "docsUrl": "https://replicate.com/docs",
+      "envVar": "REPLICATE_API_TOKEN",
+      "baseUrl": "https://api.replicate.com/v1",
+      "keyPrefix": "r8_",
+      "capabilities": {
+        "streaming": true,
+        "tools": false,
+        "vision": true,
+        "structured": false,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": false
+      },
+      "notes": "Runs arbitrary community models; async prediction API."
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "category": "media",
+      "keyUrl": "https://elevenlabs.io/app/settings/api-keys",
+      "docsUrl": "https://elevenlabs.io/docs/api-reference/introduction",
+      "envVar": "ELEVENLABS_API_KEY",
+      "baseUrl": "https://api.elevenlabs.io/v1",
+      "capabilities": {
+        "streaming": true,
+        "tools": false,
+        "vision": false,
+        "structured": false,
+        "embeddings": false,
+        "caching": false,
+        "reasoning": false
+      },
+      "notes": "Speech synthesis and voice cloning."
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "category": "local",
+      "keyUrl": "https://ollama.com/download",
+      "docsUrl": "https://github.com/ollama/ollama/blob/main/docs/api.md",
+      "envVar": "OLLAMA_HOST",
+      "baseUrl": "http://localhost:11434/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "Easiest local runtime. Serves an OpenAI-compatible API at /v1 alongside its native one. `ollama pull <model>` first.",
+      "healthPath": "/api/tags"
+    },
+    {
+      "id": "llamacpp",
+      "name": "llama.cpp (llama-server)",
+      "category": "local",
+      "keyUrl": "https://github.com/ggml-org/llama.cpp/releases",
+      "docsUrl": "https://github.com/ggml-org/llama.cpp/tree/master/tools/server",
+      "envVar": "LLAMACPP_BASE_URL",
+      "baseUrl": "http://localhost:8080/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "The engine most other local runtimes wrap. GBNF grammars give hard-constrained output.",
+      "healthPath": "/health"
+    },
+    {
+      "id": "lmstudio",
+      "name": "LM Studio",
+      "category": "local",
+      "keyUrl": "https://lmstudio.ai/download",
+      "docsUrl": "https://lmstudio.ai/docs/app/api",
+      "envVar": "LMSTUDIO_BASE_URL",
+      "baseUrl": "http://localhost:1234/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "GUI model browser with a built-in OpenAI-compatible server.",
+      "healthPath": "/models"
+    },
+    {
+      "id": "vllm",
+      "name": "vLLM",
+      "category": "local",
+      "keyUrl": "https://docs.vllm.ai/en/latest/getting_started/installation.html",
+      "docsUrl": "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
+      "envVar": "VLLM_BASE_URL",
+      "baseUrl": "http://localhost:8000/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": true,
+        "reasoning": true
+      },
+      "notes": "Production self-hosting: paged attention, continuous batching, multi-GPU.",
+      "healthPath": "/health"
+    },
+    {
+      "id": "localai",
+      "name": "LocalAI",
+      "category": "local",
+      "keyUrl": "https://localai.io/basics/getting_started/",
+      "docsUrl": "https://localai.io/features/openai-functions/",
+      "envVar": "LOCALAI_BASE_URL",
+      "baseUrl": "http://localhost:8080/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": false
+      },
+      "notes": "Drop-in OpenAI replacement covering text, image, and audio.",
+      "healthPath": "/readyz"
+    },
+    {
+      "id": "jan",
+      "name": "Jan",
+      "category": "local",
+      "keyUrl": "https://jan.ai/download",
+      "docsUrl": "https://jan.ai/docs",
+      "envVar": "JAN_BASE_URL",
+      "baseUrl": "http://localhost:1337/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": true,
+        "tools": true,
+        "vision": true,
+        "structured": true,
+        "embeddings": true,
+        "caching": false,
+        "reasoning": true
+      },
+      "notes": "Open-source offline desktop assistant with a local server.",
+      "healthPath": "/models"
+    },
+    {
+      "id": "custom",
+      "name": "Custom OpenAI-compatible server",
+      "category": "local",
+      "keyUrl": "https://platform.openai.com/docs/api-reference/chat",
+      "docsUrl": "https://platform.openai.com/docs/api-reference/chat",
+      "envVar": "CUSTOM_LLM_BASE_URL",
+      "baseUrl": "http://localhost:8000/v1",
+      "requiresKey": false,
+      "capabilities": {
+        "streaming": null,
+        "tools": null,
+        "vision": null,
+        "structured": null,
+        "embeddings": null,
+        "caching": null,
+        "reasoning": null
+      },
+      "notes": "Any endpoint speaking the OpenAI wire format — a reverse proxy, a gateway, a colleague's box on the LAN. Capabilities are unknown until probed, which is why they are null rather than assumed."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+[package]
+name = "provenance-desktop"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Desktop front-end for sealing and verifying documents of contested provenance."
+
+# Its own workspace: the root workspace builds and tests on Linux, where the
+# webview toolchain this crate needs is not necessarily present.
+[workspace]
+
+[lib]
+name = "provenance_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+provenance-core = { path = "../../crates/provenance-core" }
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"

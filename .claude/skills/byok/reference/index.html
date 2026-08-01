@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Providers — Keys &amp; Parity</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Providers</h1>
+        <p class="lede">
+          Your keys, and what each provider can actually do.
+        </p>
+      </header>
+
+      <nav class="tabs" role="tablist">
+        <button role="tab" id="tab-keys" aria-controls="panel-keys" aria-selected="true">
+          API Keys
+        </button>
+        <button role="tab" id="tab-parity" aria-controls="panel-parity" aria-selected="false">
+          Feature Parity
+        </button>
+      </nav>
+
+      <!-- ── BYOK ─────────────────────────────────────────────────────── -->
+      <section id="panel-keys" role="tabpanel" aria-labelledby="tab-keys">
+        <div class="notice">
+          Keys are held in this browser only — <code>localStorage</code>, never sent
+          anywhere by this page and never written into the repository. In a desktop
+          build, swap the storage adapter in <code>app.js</code> for the OS keychain.
+        </div>
+
+        <div class="toolbar">
+          <input
+            id="filter"
+            type="search"
+            placeholder="Filter providers…"
+            aria-label="Filter providers"
+          />
+          <label class="check">
+            <input type="checkbox" id="only-configured" />
+            Only configured
+          </label>
+          <span class="spacer"></span>
+          <span id="key-count" class="count"></span>
+        </div>
+
+        <div id="providers"></div>
+
+        <p class="footnote">
+          Missing one? Add it to <code>reference/providers.json</code> — it shows up
+          here <em>and</em> in
+          <button class="linklike" data-goto="parity">Feature Parity</button>
+          automatically. That file is the single source of truth for both tabs.
+        </p>
+      </section>
+
+      <!-- ── Parity ───────────────────────────────────────────────────── -->
+      <section id="panel-parity" role="tabpanel" aria-labelledby="tab-parity" hidden>
+        <div class="notice warn">
+          <strong>Capability data goes stale.</strong> Providers ship features
+          constantly. Last reviewed <strong id="last-reviewed">—</strong>; treat any
+          row older than a month or so as a prompt to re-check the provider's docs
+          (linked in every row) rather than as current fact.
+        </div>
+
+        <div class="toolbar">
+          <input
+            id="parity-filter"
+            type="search"
+            placeholder="Filter providers…"
+            aria-label="Filter parity table"
+          />
+          <label class="check">
+            <input type="checkbox" id="only-gaps" />
+            Only rows with gaps
+          </label>
+        </div>
+
+        <div id="parity-stats" class="stats"></div>
+
+        <div class="table-scroll">
+          <table id="parity" aria-describedby="parity-legend">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <p id="parity-legend" class="footnote">
+          <span class="yes">✓</span> supported ·
+          <span class="no">·</span> not supported ·
+          <span class="unk">?</span> unknown, needs probing.
+          Aggregators report the ceiling across the models they route to — an
+          individual model may do less.
+        </p>
+
+        <details class="howto">
+          <summary>Adding or updating a provider</summary>
+          <ol>
+            <li>
+              Edit <code>reference/providers.json</code>. One object per provider:
+              <code>id</code>, <code>name</code>, <code>category</code>,
+              <code>keyUrl</code>, <code>docsUrl</code>, <code>envVar</code>,
+              <code>baseUrl</code>, and a <code>capabilities</code> block.
+            </li>
+            <li>
+              Use <code>null</code> for a capability you have not checked. It renders
+              as <span class="unk">?</span> — an honest gap beats a guess that reads
+              as fact.
+            </li>
+            <li>Bump <code>lastReviewed</code> when you re-verify a row.</li>
+            <li>
+              Run <code>scripts/check-links.py</code>. CI runs it too, so a console
+              URL that moves fails the build instead of quietly 404-ing for users.
+            </li>
+          </ol>
+        </details>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

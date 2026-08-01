@@ -1,0 +1,111 @@
+name: Desktop .dmg (macOS)
+
+# Produces the macOS disk image. It has to run here rather than locally on Linux:
+# `.dmg` creation uses hdiutil, which only exists on macOS.
+#
+# Run it from the Actions tab ("Run workflow"), or push a v* tag to also attach
+# the image to a GitHub Release.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+    # Working branches build the image too. GitHub only offers "Run workflow"
+    # for workflows present on the default branch, so until this merges there
+    # is no other way to get a .dmg out of a pull request.
+    branches: ["claude/**"]
+
+concurrency:
+  group: dmg-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  dmg:
+    name: Build universal .dmg
+    # macos-14 is Apple Silicon; the universal target covers Intel Macs too, so
+    # one artifact runs everywhere.
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri
+
+      - name: Build the disk image
+        working-directory: desktop
+        run: npx --yes @tauri-apps/cli@latest build --target universal-apple-darwin
+
+      - name: Locate the artifact
+        id: find
+        run: |
+          set -euo pipefail
+          DMG=$(find desktop/src-tauri/target/universal-apple-darwin/release/bundle/dmg \
+                  -name '*.dmg' -maxdepth 1 | head -1)
+          if [ -z "$DMG" ]; then
+            echo "::error::no .dmg was produced"
+            exit 1
+          fi
+          echo "path=$DMG" >> "$GITHUB_OUTPUT"
+          echo "Built $DMG ($(du -h "$DMG" | cut -f1))"
+
+      # Both slices must be present, or Intel Macs get a binary that will not run.
+      - name: Confirm the binary is universal
+        run: |
+          set -euo pipefail
+          APP=desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/Provenance.app
+          lipo -archs "$APP/Contents/MacOS/provenance-desktop" | tee /tmp/archs
+          grep -q arm64 /tmp/archs
+          grep -q x86_64 /tmp/archs
+
+      # Upload before the launch check: if the smoke test is flaky on a headless
+      # runner, the job should still fail loudly *and* leave a downloadable image
+      # rather than nothing at all.
+      - name: Upload the .dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: Provenance-macos-universal-dmg
+          path: ${{ steps.find.outputs.path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      # Proof the shipped build actually works, not just that it linked.
+      - name: Smoke-test the bundled app
+        run: |
+          set -euo pipefail
+          APP=desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/Provenance.app
+          # `open -a` resolves an application *name* through Launch Services;
+          # a path has to be opened without -a.
+          open "$APP"
+          sleep 12
+          # -x matches the process name exactly, so this cannot match the shell
+          # running the check.
+          if pgrep -x provenance-desktop > /dev/null; then
+            echo "app launched and stayed up"
+            pkill -x provenance-desktop || true
+          else
+            echo "::error::the app exited immediately after launch"
+            exit 1
+          fi
+
+      - name: Attach to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.find.outputs.path }}
+          body: |
+            Unsigned build. macOS will refuse it on first open until the
+            quarantine flag is cleared:
+
+                xattr -dr com.apple.quarantine /Applications/Provenance.app
+
+            Or right-click the app and choose Open.
